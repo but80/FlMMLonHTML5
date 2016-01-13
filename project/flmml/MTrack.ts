@@ -226,8 +226,8 @@
             this.m_delta = 0;
         }
 
-        recNote(noteNo: number, len: number, vel: number, keyon: number = 1, keyoff: number = 1): void {
-            var e0: MEvent = this.makeEvent();
+        recNote(noteNo: number, len: number, vel: number, keyon: number = 1, keyoff: number = 1, trace: any[] = null): void {
+            var e0: MEvent = this.makeEvent(trace);
             if (keyon) {
                 e0.setNoteOn(noteNo, vel);
             }
@@ -338,8 +338,8 @@
         }
 
         // 新規イベントインスタンスを得る
-        protected makeEvent(): MEvent {
-            var e: MEvent = new MEvent(this.m_globalTick);
+        protected makeEvent(trace: any[] = null): MEvent {
+            var e: MEvent = new MEvent(this.m_globalTick, trace);
             e.setDelta(this.m_delta);
             this.m_delta = 0;
             return e;

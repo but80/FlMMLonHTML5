@@ -14,7 +14,8 @@ module messenger {
         COM_SYNCINFO  =  9, // Main->Worker->Main
         COM_PLAYSOUND = 10, // Worker->Main
         COM_STOPSOUND = 11, // Worker->Main->Worker
-        COM_DEBUG     = 12; // Worker->Main
+        COM_DEBUG     = 12, // Worker->Main
+        COM_TRACE     = 13; // Main->Worker->Main
 
     export class Messenger {
         mml: MML;
@@ -49,7 +50,7 @@ module messenger {
                     this.mml = new MML();
                     break;
                 case COM_PLAY:
-                    mml.play(data.mml);
+                    mml.play(data.mml, data.paused);
                     break;
                 case COM_STOP:
                     mml.stop();
@@ -76,6 +77,9 @@ module messenger {
                 case COM_STOPSOUND:
                     this.onstopsound && this.onstopsound();
                     break;
+                case COM_TRACE:
+                    this.responseTrace(data.eventId);
+                    break;
             }
         }
 
@@ -96,7 +100,18 @@ module messenger {
                     metaComment: mml.getMetaComment(),
                     metaArtist: mml.getMetaArtist(),
                     metaCoding: mml.getMetaCoding()
-                }
+                },
+                events: mml['m_tracks'].map((track)=>{
+                    return track['m_events'].map((event)=>{
+                        return [
+                            event.getId(),
+                            event['m_tick'],
+                            event['m_status'],
+                            event['m_data0'],
+                            event['m_data1']
+                        ];
+                    })
+                })
             });
         }
 
@@ -131,6 +146,14 @@ module messenger {
                     nowTimeStr: mml.getNowTimeStr(),
                     voiceCount: mml.getVoiceCount()
                 }
+            });
+        }
+
+        responseTrace(eventId: number): void {
+            postMessage({
+                type: COM_TRACE,
+                eventId: eventId,
+                trace: this.mml.getEventById(eventId).getTrace()
             });
         }
 

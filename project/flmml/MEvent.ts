@@ -1,15 +1,30 @@
-﻿module flmml {
+module flmml {
     export class MEvent {
+        private m_id: number;
         private m_delta: number;
         private m_status: number;
         private m_data0: number;
         private m_data1: number;
         private m_tick: number;
+        private m_trace: any[];
         private TEMPO_SCALE: number = 100; // bpm小数点第二位まで有効
 
-        constructor(tick: number) {
+        private static idCounter: number = 0;
+        private static instances: MEvent[];
+        static resetCounter() : void {
+            MEvent.idCounter = 0;
+            MEvent.instances = [null];
+        }
+        static getById(id: number): MEvent {
+            return MEvent.instances[id];
+        }
+
+        constructor(tick: number, trace: any[] = null) {
             this.set(/*MStatus.NOP*/1, 0, 0);
             this.setTick(tick);
+            this.m_trace = trace;
+            this.m_id = ++MEvent.idCounter;
+            MEvent.instances[this.m_id] = this;
         }
         set(status: number, data0: number, data1: number): void {
             this.m_status = status;
@@ -60,6 +75,7 @@
         setHwLfo(w: number, f: number, pmd: number, amd: number, pms: number, ams: number, s: number): void {
             this.set(/*MStatus.HW_LFO*/39, ((w & 3) << 27) | ((f & 0xff) << 19) | ((pmd & 0x7f) << 12) | ((amd & 0x7f) << 5) | ((pms & 7) << 2) | (ams & 3), 0);
         }
+        getId(): number { return this.m_id; }
         getStatus(): number { return this.m_status; }
         getDelta(): number { return this.m_delta; }
         getTick(): number { return this.m_tick; }
@@ -106,5 +122,6 @@
         getPortBase(): number { return this.m_data0; }
         getVoiceCount(): number { return this.m_data0; }
         getHwLfoData(): number { return this.m_data0; }
+        getTrace(): any[] { return this.m_trace; }
     }
 }
