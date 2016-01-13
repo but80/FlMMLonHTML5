@@ -10,15 +10,15 @@
         static UNOPENED_GROUPNOTES: number = 7;
         static INVALID_MACRO_NAME: number = 8;
         static s_string: Array<string> = [
-            "対応していないコマンド '%s' があります。",
-            "終わりが見つからない繰り返しがあります。",
-            "始まりが見つからないコメントがあります。",
-            "終わりが見つからないコメントがあります。",
-            "マクロが再帰的に呼び出されています。",
-            "マクロ引数指定の \"\" が閉じられていません",
-            "終りが見つからない連符があります",
-            "始まりが見つからない連符があります",
-            "マクロ名に使用できない文字が含まれています。'%s'"
+            "Unknown command '%s'",
+            "Unclosed repeat",
+            "Unopened comment",
+            "Unclosed comment",
+            "Recursive macro",
+            "Unclosed argument quote",
+            "Unclosed group notes",
+            "Unopened group notes",
+            "Invalid macro name '%s'"
         ];
 
         static getString(warnId: number, str: string): string {
