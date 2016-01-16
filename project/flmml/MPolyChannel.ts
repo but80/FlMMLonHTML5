@@ -29,6 +29,14 @@ module flmml {
             this.m_voiceLen = this.m_voices.length;
         }
 
+        mute(f: boolean): void {
+            for (var i: number = 0; i < this.m_voiceLen; i++) this.m_voices[i].mute(f);
+        }
+
+        isMuted(): boolean {
+            return this.m_voiceLen==0 || this.m_voices[0].isMuted();
+        }
+
         setExpression(ex: number): void {
             for (var i: number = 0; i < this.m_voiceLen; i++) this.m_voices[i].setExpression(ex);
         }

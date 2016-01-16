@@ -7,6 +7,8 @@
         noteOn(noteNo: number, velocity: number): void;
         noteOff(noteNo: number): void;
         close(): void;
+        mute(f: boolean): void;
+        isMuted(): boolean;
         setNoiseFreq(frequency: number): void;
         setForm(form: number, subform: number): void;
         setEnvelope1Atk(attack: number): void;

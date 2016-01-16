@@ -15,7 +15,8 @@ module messenger {
         COM_PLAYSOUND = 10, // Worker->Main
         COM_STOPSOUND = 11, // Worker->Main->Worker
         COM_DEBUG     = 12, // Worker->Main
-        COM_TRACE     = 13; // Main->Worker->Main
+        COM_TRACE     = 13, // Main->Worker->Main
+        COM_MUTE      = 14; // Main->Worker
 
     export class Messenger {
         mml: MML;
@@ -59,6 +60,9 @@ module messenger {
                 case COM_PAUSE:
                     mml.pause();
                     this.syncInfo();
+                    break;
+                case COM_MUTE:
+                    mml.mute(data.track, data.mute);
                     break;
                 case COM_BUFFER:
                     this.onrequestbuffer && this.onrequestbuffer(data);

@@ -1,7 +1,7 @@
 ﻿module flmml {
     // Web Audio + Web Worker利用につき大幅改定
     export class MSequencer {
-        protected static MULTIPLE: number = 32;
+        protected static MULTIPLE: number = 2;//32;
         
         // 戻すときは正規表現使用の置換で
         // /\*MSequencer\.(STATUS_|STEP_)(.*)\*/[0-9]*

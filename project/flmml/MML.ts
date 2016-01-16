@@ -1636,7 +1636,7 @@ module flmml {
             this.process();
 
             // omit
-        if (this.m_tracks[this.m_tracks.length - 1].getNumEvents() === 0) this.m_tracks.pop();
+            if (this.m_tracks[this.m_tracks.length - 1].getNumEvents() === 0) this.m_tracks.pop();
 
             // conduct
             this.m_tracks[MTrack.TEMPO_TRACK].conduct(this.m_tracks);
@@ -1690,6 +1690,21 @@ module flmml {
 
         isPaused(): boolean {
             return this.m_sequencer.isPaused();
+        }
+
+        mute(iTrack: number, f: boolean): void {
+            if (iTrack == MTrack.TEMPO_TRACK) return;
+            this.m_tracks[iTrack].mute(f);
+        }
+
+        isMuted(iTrack: number): boolean {
+            return this.m_tracks[iTrack].isMuted();
+        }
+
+        muteAll(f: boolean): void {
+            for (var i=MTrack.FIRST_TRACK; i < this.m_tracks.length; i++) {
+                this.m_tracks[i].mute(f);
+            }
         }
 
         getTotalMSec(): number {

@@ -221,6 +221,14 @@
             this.m_globalTick = this.m_chordBegin;
         }
 
+        mute(f: boolean): void {
+            this.m_ch.mute(f);
+        }
+
+        isMuted(): boolean {
+            return this.m_ch.isMuted();
+        }
+
         recDelta(e: MEvent): void {
             e.setDelta(this.m_delta);
             this.m_delta = 0;

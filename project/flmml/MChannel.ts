@@ -53,6 +53,7 @@ module flmml {
         private m_ringPipe: number;
         private m_syncMode: number;
         private m_syncPipe: number;
+        private m_isMuted: boolean;
 
         private m_portDepth: number;
         private m_portDepthAdd: number;
@@ -102,6 +103,7 @@ module flmml {
             this.m_lpfFrq = 0;
             this.m_lpfRes = 0;
             this.m_pulseWidth = 0.5;
+            this.m_isMuted = false;
             this.setInput(0, 0);
             this.setOutput(0, 0);
             this.setRing(0, 0);
@@ -210,6 +212,14 @@ module flmml {
             else {
                 return this.m_envelope1.isPlaying();
             }
+        }
+
+        mute(f: boolean): void {
+            this.m_isMuted = f;
+        }
+
+        isMuted(): boolean {
+            return this.m_isMuted;
         }
 
         getId(): number {
@@ -681,6 +691,7 @@ module flmml {
             if (playing) {
                 switch (this.m_outMode) {
                     case 0:
+                        if (this.m_isMuted) break;
                         //console.log("output audio");
                         var samples0 = samplesSt[0];
                         var samples1 = samplesSt[1];
@@ -713,17 +724,23 @@ module flmml {
                         //console.log("output "+this.m_outPipe);
                         pipe = MChannel.s_pipeArr[this.m_outPipe];
                         if (this.m_slaveVoice === false) {
+                            if (this.m_isMuted) {
+                                pipe.set(MChannel.emptyBuffer.subarray(0, delta), start);
+                                break;
+                            }
                             for (i = start; i < end; i++) {
                                 pipe[i] = trackBuffer[i];
                             }
                         }
                         else {
+                            if (this.m_isMuted) break;
                             for (i = start; i < end; i++) {
                                 pipe[i] += trackBuffer[i];
                             }
                         }
                         break;
                     case 2: // add
+                        if (this.m_isMuted) break;
                         pipe = MChannel.s_pipeArr[this.m_outPipe];
                         for (i = start; i < end; i++) {
                             pipe[i] += trackBuffer[i];
