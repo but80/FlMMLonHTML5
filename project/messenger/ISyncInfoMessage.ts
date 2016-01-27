@@ -1,4 +1,4 @@
-/// <reference path="../flmml/ITrackStatus.ts" />
+/// <reference path="../flmml/ISequencerStatus.ts" />
 
 module messenger {
     
