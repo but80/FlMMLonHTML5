@@ -1,4 +1,11 @@
-﻿/// <reference path="IChannel.ts" />
+/// <reference path="IChannel.ts" />
+/// <reference path="MEnvelope.ts" />
+/// <reference path="MOscillator.ts" />
+/// <reference path="MOscNoise.ts" />
+/// <reference path="MOscOPM.ts" />
+/// <reference path="MOscPulse.ts" />
+/// <reference path="MFilter.ts" />
+/// <reference path="MFormant.ts" />
 
 module flmml {
     export class MChannel implements IChannel {
@@ -74,6 +81,16 @@ module flmml {
         protected static s_pipeArr: Array<Float32Array>;
         protected static s_syncSources: Array<Array<boolean>>;
         protected static s_lfoDelta: number = 245;
+
+        getChannelStatus(): IChannelStatus {
+            return {
+                noteNo: this.m_noteNo,
+                detune: this.m_detune,
+                expression: this.m_expression,
+                velocity: this.m_velocity,
+                pan: this.m_pan
+           };
+        }
 
         constructor() {
             this.m_noteNo = 0;

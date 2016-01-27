@@ -1,4 +1,4 @@
-﻿/// <reference path="IChannel.ts" />
+/// <reference path="MChannel.ts" />
 
 module flmml {
     /**
@@ -246,6 +246,11 @@ module flmml {
                 this.m_voices[0].clearOutPipe(max, start, delta);
             }
         }
+        
+        getChannelStatus(): IChannelStatus {
+            return this.m_voices[0].getChannelStatus();
+        }
+        
         /*
          * End Class Definition
          */

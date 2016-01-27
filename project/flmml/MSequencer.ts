@@ -1,4 +1,4 @@
-﻿module flmml {
+module flmml {
     // Web Audio + Web Worker利用につき大幅改定
     export class MSequencer {
         protected static MULTIPLE: number = 2;//32;
@@ -40,6 +40,7 @@
         protected m_lastTime: number;
         protected m_maxProcTime: number;
         protected m_waitPause: boolean;
+        protected m_level: number[];
 
         protected processAllBinded: Function;
 
@@ -59,6 +60,7 @@
                 [new Float32Array(sLen), new Float32Array(sLen)],
                 [new Float32Array(sLen), new Float32Array(sLen)]
             ];
+            this.m_level = [0, 0]; 
             this.m_maxProcTime = this.BUFFER_SIZE / this.SAMPLE_RATE * 1000.0 * 0.8;
             //this.m_lastTime = 0;
             this.processAllBinded = this.processAll.bind(this);
@@ -261,6 +263,13 @@
             var base: number = bufSize * this.m_playSize;
             sendBuf[0].set(this.m_buffer[this.m_playSide][0].subarray(base, base + bufSize));
             sendBuf[1].set(this.m_buffer[this.m_playSide][1].subarray(base, base + bufSize));
+            for (var i=0; i<2; i++) {
+                var level = 0;
+                for (var j=0; j<bufSize; j++) {
+                    level = Math.max(Math.abs(sendBuf[i][j]));
+                }
+                this.m_level[i] = level;
+            }
             msgr.sendBuffer(sendBuf);
             this.m_playSize++;
             this.m_globalSample += bufSize;
@@ -307,6 +316,10 @@
             var smin: string = "0" + (sec / 60 | 0);
             var ssec: string = "0" + (sec % 60 | 0);
             return smin.substr(smin.length-2, 2) + ":" + ssec.substr(ssec.length-2, 2);
+        }
+        
+        getLevel(): number[] {
+            return this.m_level;
         }
     }
 } 

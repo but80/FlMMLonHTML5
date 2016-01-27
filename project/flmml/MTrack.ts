@@ -1,4 +1,8 @@
-﻿module flmml {
+/// <reference path="ITrackStatus.ts" />
+/// <reference path="MChannel.ts" />
+/// <reference path="MEvent.ts" />
+
+module flmml {
     export class MTrack {
         static SAMPLE_RATE: number;
 
@@ -43,6 +47,13 @@
             this.m_chordEnd = 0;
             this.m_chordMode = false;
             if (!MTrack.SAMPLE_RATE) MTrack.SAMPLE_RATE = msgr.SAMPLE_RATE;
+        }
+        
+        getTrackStatus(): ITrackStatus {
+            return {
+                volume: this.m_volume,
+                channel: this.m_ch.getChannelStatus()
+            };
         }
 
         getNumEvents(): number {

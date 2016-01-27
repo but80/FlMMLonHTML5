@@ -1,4 +1,6 @@
-﻿module flmml {
+/// <reference path="MEnvelopePoint.ts" />
+
+module flmml {
     export class MEnvelope {
         private static SAMPLE_RATE: number;
 

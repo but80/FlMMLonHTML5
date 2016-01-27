@@ -1,4 +1,4 @@
-﻿/// <reference path="../flmml/MML.ts" />
+/// <reference path="../flmml/MML.ts" />
 
 module messenger {
     import MML = flmml.MML;
@@ -148,7 +148,8 @@ module messenger {
                     _isPaused: mml.isPaused(),
                     nowMSec: mml.getNowMSec(),
                     nowTimeStr: mml.getNowTimeStr(),
-                    voiceCount: mml.getVoiceCount()
+                    voiceCount: mml.getVoiceCount(),
+                    sequencerStatus: mml.getSequencerStatus()
                 }
             });
         }
