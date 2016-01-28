@@ -559,7 +559,7 @@ module flmml {
             this.m_globalTick = 0;
         }
 
-        conduct(trackArr: Array<MTrack>): void {
+        conduct(trackArr: Array<MTrack>, trackEndMarginMsec:number): void {
             var ni: number = this.m_events.length;
             var nj: number = trackArr.length;
             var globalTick: number = 0;
@@ -591,7 +591,7 @@ module flmml {
             this.recGlobal(maxGlobalTick, e);
             globalSample += (maxGlobalTick - globalTick) * spt;
 
-            this.recRestMSec(3000);
+            this.recRestMSec(trackEndMarginMsec);
             this.recEOT();
             globalSample += 3 * MTrack.SAMPLE_RATE;
 

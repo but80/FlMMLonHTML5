@@ -319,8 +319,13 @@ module flmml {
         protected m_metaArtist: string;
         protected m_metaCoding: string;
         protected m_metaComment: string;
+        
+        trackEndMarginMSec: number;
+        channelEndMarginMSec: number;
 
         constructor() {
+            this.trackEndMarginMSec = 3000;
+            this.channelEndMarginMSec = 2000;
             this.m_sequencer = new MSequencer();
         }
 
@@ -1639,7 +1644,7 @@ module flmml {
             if (this.m_tracks[this.m_tracks.length - 1].getNumEvents() === 0) this.m_tracks.pop();
 
             // conduct
-            this.m_tracks[MTrack.TEMPO_TRACK].conduct(this.m_tracks);
+            this.m_tracks[MTrack.TEMPO_TRACK].conduct(this.m_tracks, this.trackEndMarginMSec);
 
             // post process
             for (var i: number = MTrack.TEMPO_TRACK; i < this.m_tracks.length; i++) {
@@ -1647,7 +1652,7 @@ module flmml {
                     if (this.m_usingPoly && (this.m_polyForce || this.m_tracks[i].findPoly())) {
                         this.m_tracks[i].usingPoly(this.m_polyVoice);
                     }
-                    this.m_tracks[i].recRestMSec(2000);
+                    this.m_tracks[i].recRestMSec(this.channelEndMarginMSec);
                     this.m_tracks[i].recClose();
                 }
                 this.m_sequencer.connect(this.m_tracks[i]);
