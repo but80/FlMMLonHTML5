@@ -1,5 +1,6 @@
 /// <reference path="ITrackStatus.ts" />
 /// <reference path="MChannel.ts" />
+/// <reference path="MPolyChannel.ts" />
 /// <reference path="MEvent.ts" />
 
 module flmml {

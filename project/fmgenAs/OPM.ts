@@ -6,6 +6,10 @@
 
 /// <reference path="Timer.ts" />
 /// <reference path="Operator.ts" />
+/// <reference path="Chip.ts" />
+/// <reference path="Channel4.ts" />
+/// <reference path="OpType.ts" />
+/// <reference path="EGPhase.ts" />
 
 module fmgenAs {
     /**

@@ -1,7 +1,11 @@
 /// <reference path="../flmml/MML.ts" />
 
 module messenger {
+
     import MML = flmml.MML;
+
+    // from lib.webworker.d.ts
+    declare function postMessage(message ?: any, ports ?: any): void;
 
     var COM_BOOT      =  1, // Main->Worker
         COM_PLAY      =  2, // Main->Worker
