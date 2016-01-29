@@ -247,10 +247,6 @@ module flmml {
             }
         }
         
-        getChannelStatus(): IChannelStatus {
-            return this.m_voices[0].getChannelStatus();
-        }
-        
         /*
          * End Class Definition
          */

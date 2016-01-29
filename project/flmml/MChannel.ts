@@ -82,16 +82,6 @@ module flmml {
         protected static s_syncSources: Array<Array<boolean>>;
         protected static s_lfoDelta: number = 245;
 
-        getChannelStatus(): IChannelStatus {
-            return {
-                noteNo: this.m_noteNo,
-                detune: this.m_detune,
-                expression: this.m_expression,
-                velocity: this.m_velocity,
-                pan: this.m_pan
-           };
-        }
-
         constructor() {
             this.m_noteNo = 0;
             this.m_detune = 0;

@@ -1,5 +1,3 @@
-/// <reference path="IChannelStatus.ts" />
-
 module flmml {
     export interface IChannel {
         setExpression(ex: number): void;
@@ -43,6 +41,5 @@ module flmml {
         setHwLfo(data: number): void;
         reset(): void;
         getSamples(samplesSt: Array<Float32Array>, max: number, start: number, delta: number): void;
-        getChannelStatus(): IChannelStatus;
     }
 }

@@ -152,8 +152,7 @@ module messenger {
                     _isPaused: mml.isPaused(),
                     nowMSec: mml.getNowMSec(),
                     nowTimeStr: mml.getNowTimeStr(),
-                    voiceCount: mml.getVoiceCount(),
-                    sequencerStatus: mml.getSequencerStatus()
+                    voiceCount: mml.getVoiceCount()
                 }
             });
         }

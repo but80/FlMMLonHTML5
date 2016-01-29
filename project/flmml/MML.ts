@@ -1753,18 +1753,5 @@ module flmml {
             return this.m_metaCoding;
         }
         
-        getSequencerStatus(): ISequencerStatus {
-            var tracks: ITrackStatus[] = [];
-            for (var track of this.m_tracks) {
-                var s = track.getTrackStatus();
-                tracks.push(s);
-            }
-            var l = this.m_sequencer.getLevel();
-            return {
-                tracks: tracks,
-                levelL: l[0],
-                levelR: l[1]
-            };
-        }
     }
 }

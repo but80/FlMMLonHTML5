@@ -1,5 +1,3 @@
-/// <reference path="../flmml/ISequencerStatus.ts" />
-
 module messenger {
     
     export interface ISyncInfoMessage_Info {
@@ -8,7 +6,6 @@ module messenger {
         nowMSec: number;
         nowTimeStr: string;
         voiceCount: number;
-        sequencerStatus: flmml.ISequencerStatus;
     }
     
     export interface ISyncInfoMessage {
