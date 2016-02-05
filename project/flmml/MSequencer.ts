@@ -1,7 +1,7 @@
 module flmml {
     // Web Audio + Web Worker利用につき大幅改定
     export class MSequencer {
-        protected static MULTIPLE: number = 2;//32;
+        protected static DEFAULT_MULTIPLE: number = 32;
         
         // 戻すときは正規表現使用の置換で
         // /\*MSequencer\.(STATUS_|STEP_)(.*)\*/[0-9]*
@@ -19,6 +19,7 @@ module flmml {
         //protected static STEP_POST:     number = 3;
         //protected static STEP_COMPLETE: number = 4;
 
+        protected MULTIPLE: number;
         protected BUFFER_SIZE: number;
         protected SAMPLE_RATE: number;
         protected emptyBuffer: Float32Array;
@@ -40,14 +41,17 @@ module flmml {
         protected m_lastTime: number;
         protected m_maxProcTime: number;
         protected m_waitPause: boolean;
+        protected m_offline: boolean;
 
         protected processAllBinded: Function;
 
-        constructor() {
+        constructor(offline: boolean) {
+            this.m_offline = offline;
+            this.MULTIPLE = offline ? 1 : MSequencer.DEFAULT_MULTIPLE;
             this.SAMPLE_RATE = msgr.SAMPLE_RATE;
             this.BUFFER_SIZE = msgr.BUFFER_SIZE;
-            msgr.emptyBuffer = this.emptyBuffer = new Float32Array(this.BUFFER_SIZE * MSequencer.MULTIPLE);
-            var sLen: number = this.BUFFER_SIZE * MSequencer.MULTIPLE;
+            msgr.emptyBuffer = this.emptyBuffer = new Float32Array(this.BUFFER_SIZE * this.MULTIPLE);
+            var sLen: number = this.BUFFER_SIZE * this.MULTIPLE;
             MChannel.boot(sLen);
             MOscillator.boot();
             MEnvelope.boot();
@@ -159,7 +163,7 @@ module flmml {
         private processAll(): void {
             var buffer: Array<Float32Array> = this.m_buffer[1 - this.m_playSide],
                 bufSize: number = this.BUFFER_SIZE,
-                sLen: number = bufSize * MSequencer.MULTIPLE,
+                sLen: number = bufSize * this.MULTIPLE,
                 bLen: number = bufSize * 2,
                 nLen: number = this.m_trackArr.length,
                 msgr_: messenger.Messenger = msgr;
@@ -171,7 +175,7 @@ module flmml {
                     buffer[1].set(this.emptyBuffer);
                     if (nLen > 0) {
                         var track: MTrack = this.m_trackArr[MTrack.TEMPO_TRACK];
-                        track.onSampleData(null, 0, bufSize * MSequencer.MULTIPLE, true);
+                        track.onSampleData(null, 0, bufSize * this.MULTIPLE, true);
                     }
                     this.m_processTrack = MTrack.FIRST_TRACK;
                     this.m_processOffset = 0;
@@ -219,8 +223,13 @@ module flmml {
                             this.pause();
                             this.m_step = /*MSequencer.STEP_PRE*/1;
                         } else {
-                            msgr_.playSound();
-                            this.processStart();
+                            if (this.m_offline) {
+                                msgr_.sendWav(buffer);
+                            }
+                            else {
+                                 msgr_.playSound();
+                                 this.processStart();
+                            }
                         }
                     }
                     break;
@@ -235,7 +244,7 @@ module flmml {
                 msgr.complete();
                 return;
             }
-            if (this.m_playSize >= MSequencer.MULTIPLE) {
+            if (this.m_playSize >= this.MULTIPLE) {
                 // バッファ完成済みの場合
                 if (this.m_step === /*MSequencer.STEP_COMPLETE*/4) {
                     this.m_playSide = 1 - this.m_playSide;

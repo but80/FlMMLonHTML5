@@ -1,5 +1,8 @@
 /// <reference path="../flmml/MML.ts" />
 
+declare var require: (m: string) => any;
+var WavEncoder = require("wav-encoder");
+
 module messenger {
 
     import MML = flmml.MML;
@@ -20,7 +23,9 @@ module messenger {
         COM_STOPSOUND = 11, // Worker->Main->Worker
         COM_DEBUG     = 12, // Worker->Main
         COM_TRACE     = 13, // Main->Worker->Main
-        COM_MUTE      = 14; // Main->Worker
+        COM_MUTE      = 14, // Main->Worker
+        COM_GENWAV    = 15, // Main->Worker->Main
+        COM_TERMINATE = 16; // Main->Worker
 
     export class Messenger {
         mml: MML;
@@ -47,31 +52,38 @@ module messenger {
                 type: number = data.type,
                 mml: MML = this.mml;
 
-            //console.log("Worker received " + type);
             switch (type) {
                 case COM_BOOT:
+                    // console.log("[COM_BOOT] rate=%s bufsize=%s offline=%s", data.sampleRate, data.bufferSize, data.offline);
                     this.SAMPLE_RATE = data.sampleRate;
                     this.BUFFER_SIZE = data.bufferSize;
-                    this.mml = new MML();
+                    mml = this.mml = new MML(data.offline);
+                    if (data.offline && data.mml != null) mml.play(data.mml);
                     break;
                 case COM_PLAY:
+                    // console.log("[COM_PLAY] paused=%s offline=%s", data.paused);
                     mml.play(data.mml, data.paused);
                     break;
                 case COM_STOP:
+                    // console.log("[COM_STOP]");
                     mml.stop();
                     this.syncInfo();
                     break;
                 case COM_PAUSE:
+                    // console.log("[COM_PAUSE]");
                     mml.pause();
                     this.syncInfo();
                     break;
                 case COM_MUTE:
+                    // console.log("[COM_MUTE] track=%s mute=%s", data.track, data.mute);
                     mml.mute(data.track, data.mute);
                     break;
                 case COM_BUFFER:
+                    // console.log("[COM_BUFFER]");
                     this.onrequestbuffer && this.onrequestbuffer(data);
                     break;
                 case COM_SYNCINFO:
+                    // console.log("[COM_SYNCINFO] interval=%s", data.interval);
                     if (typeof data.interval === "number") {
                         this.infoInterval = data.interval;
                         clearInterval(this.tIDInfo);
@@ -83,10 +95,18 @@ module messenger {
                     }
                     break;
                 case COM_STOPSOUND:
+                    // console.log("[COM_STOPSOUND]");
                     this.onstopsound && this.onstopsound();
                     break;
                 case COM_TRACE:
                     this.responseTrace(data.eventId);
+                    break;
+                case COM_GENWAV:
+                    // console.log("[COM_GENWAV]");
+                    mml.play(data.mml);
+                    break;
+                case COM_TERMINATE:
+                    self.close();
                     break;
             }
         }
@@ -120,6 +140,15 @@ module messenger {
                         ];
                     })
                 })
+            });
+        }
+
+        sendWav(buffer: Float32Array[]): void {
+            WavEncoder.encode({
+                sampleRate: this.SAMPLE_RATE,
+                channelData: buffer
+            }).then(function(wav) {
+                postMessage({ type: COM_GENWAV, wav: wav });
             });
         }
 

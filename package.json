@@ -1,0 +1,24 @@
+{
+  "name": "flmmlonhtml5-mod",
+  "version": "1.0.0",
+  "description": "The transplant of FlMML(https://flmml.codeplex.com/), MML player which runs on Flash Player, to HTML5. (This is modified version by but80)",
+  "main": "flmmlonhtml5.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "authors": [
+    "carborane3 <pi3_1415926535897932@yahoo.co.jp>",
+    "but80 <mersenne.sister@gmail.com>"
+  ],
+  "license": "BSD-3-Clause",
+  "devDependencies": {
+    "gulp": "^3.9.0",
+    "gulp-browserify": "^0.5.1",
+    "gulp-concat-sourcemap": "^1.3.1",
+    "gulp-sourcemaps": "^1.6.0",
+    "gulp-typescript": "^2.10.0"
+  },
+  "dependencies": {
+    "wav-encoder": "^1.0.0"
+  }
+}

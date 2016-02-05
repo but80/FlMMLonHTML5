@@ -289,6 +289,7 @@ module flmml {
         protected static MAX_SYNCSOURCE: number = 3;
         protected static MAX_POLYVOICE: number = 64;
 
+        protected m_offline: boolean;
         protected m_sequencer: MSequencer;
         protected m_tracks: Array<MTrack>;
         protected m_source: SourceString;
@@ -323,10 +324,11 @@ module flmml {
         trackEndMarginMSec: number;
         channelEndMarginMSec: number;
 
-        constructor() {
+        constructor(offline: boolean) {
+            this.m_offline = offline;
             this.trackEndMarginMSec = 3000;
             this.channelEndMarginMSec = 2000;
-            this.m_sequencer = new MSequencer();
+            this.m_sequencer = new MSequencer(offline);
         }
 
         // static removeWhitespace(str: string): string {
@@ -1020,8 +1022,8 @@ module flmml {
                             var begin: number = origin[nest];
                             var newstr: MappedString = new MappedString();
                             for (var i: number = 0; i < repeat[nest]; i++) {
-								var contents: MappedString = (i < repeat[nest] - 1 || last[nest] < 0 ? contents1 : contents2).clone();
-								contents.pushRef('Repeat ' + (i+1).toString(10) + '/' + repeat[nest].toString(10));
+                                var contents: MappedString = (i < repeat[nest] - 1 || last[nest] < 0 ? contents1 : contents2).clone();
+                                contents.pushRef('Repeat ' + (i+1).toString(10) + '/' + repeat[nest].toString(10));
                                 newstr.append(contents);
                             }
                             this.m_string.mapReplaceRange(begin, this.m_letter, newstr);
@@ -1585,6 +1587,10 @@ module flmml {
         }
 
         play(str: string, paused: boolean = false): void {
+            if (this.m_offline) {
+                this.play2(str);
+                return;
+            }
             if (this.m_sequencer.isPaused()) {
                 if (!paused) this.m_sequencer.play();
                 return;
