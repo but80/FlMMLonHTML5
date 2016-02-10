@@ -3857,9 +3857,9 @@ var flmml;
 var flmml;
 (function (flmml) {
     var MSequencer = (function () {
-        function MSequencer(offline) {
-            this.m_offline = offline;
-            this.MULTIPLE = offline ? 1 : MSequencer.DEFAULT_MULTIPLE;
+        function MSequencer(offlineFormat) {
+            this.m_offlineFormat = offlineFormat;
+            this.MULTIPLE = offlineFormat ? 1 : MSequencer.DEFAULT_MULTIPLE;
             this.SAMPLE_RATE = msgr.SAMPLE_RATE;
             this.BUFFER_SIZE = msgr.BUFFER_SIZE;
             msgr.emptyBuffer = this.emptyBuffer = new Float32Array(this.BUFFER_SIZE * this.MULTIPLE);
@@ -4011,8 +4011,8 @@ var flmml;
                             this.m_step = 1;
                         }
                         else {
-                            if (this.m_offline) {
-                                msgr_.sendWav(buffer);
+                            if (this.m_offlineFormat) {
+                                msgr_.sendWav(buffer, this.m_offlineFormat);
                             }
                             else {
                                 msgr_.playSound();
@@ -4096,7 +4096,7 @@ var flmml;
             var ssec = "0" + (sec % 60 | 0);
             return smin.substr(smin.length - 2, 2) + ":" + ssec.substr(ssec.length - 2, 2);
         };
-        MSequencer.DEFAULT_MULTIPLE = 32;
+        MSequencer.DEFAULT_MULTIPLE = 2;
         return MSequencer;
     })();
     flmml.MSequencer = MSequencer;
@@ -8662,11 +8662,11 @@ var flmml;
     })();
     var reNonWhitespace = /\S/;
     var MML = (function () {
-        function MML(offline) {
-            this.m_offline = offline;
+        function MML(offlineFormat) {
+            this.m_offlineFormat = offlineFormat;
             this.trackEndMarginMSec = 3000;
             this.channelEndMarginMSec = 2000;
-            this.m_sequencer = new flmml.MSequencer(offline);
+            this.m_sequencer = new flmml.MSequencer(offlineFormat);
         }
         MML.remove = function (str, start, end) {
             return str.substring(0, start) + str.substring(end + 1);
@@ -10023,7 +10023,7 @@ var flmml;
         };
         MML.prototype.play = function (str, paused) {
             if (paused === void 0) { paused = false; }
-            if (this.m_offline) {
+            if (this.m_offlineFormat) {
                 this.play2(str);
                 return;
             }
@@ -10178,33 +10178,27 @@ var messenger;
             var data = e.data, type = data.type, mml = this.mml;
             switch (type) {
                 case COM_BOOT:
-                    console.log("[COM_BOOT] rate=%s bufsize=%s offline=%s", data.sampleRate, data.bufferSize, data.offline);
                     this.SAMPLE_RATE = data.sampleRate;
                     this.BUFFER_SIZE = data.bufferSize;
-                    mml = this.mml = new MML(data.offline);
-                    if (data.offline && data.mml != null)
+                    mml = this.mml = new MML(data.offlineFormat);
+                    if (data.offlineFormat && data.mml != null)
                         mml.play(data.mml);
                     break;
                 case COM_PLAY:
-                    console.log("[COM_PLAY] paused=%s offline=%s", data.paused);
                     mml.play(data.mml, data.paused);
                     break;
                 case COM_STOP:
-                    console.log("[COM_STOP]");
                     mml.stop();
                     this.syncInfo();
                     break;
                 case COM_PAUSE:
-                    console.log("[COM_PAUSE]");
                     mml.pause();
                     this.syncInfo();
                     break;
                 case COM_MUTE:
-                    console.log("[COM_MUTE] track=%s mute=%s", data.track, data.mute);
                     mml.mute(data.track, data.mute);
                     break;
                 case COM_BUFFER:
-                    console.log("[COM_BUFFER]");
                     this.onrequestbuffer && this.onrequestbuffer(data);
                     break;
                 case COM_SYNCINFO:
@@ -10220,14 +10214,12 @@ var messenger;
                     }
                     break;
                 case COM_STOPSOUND:
-                    console.log("[COM_STOPSOUND]");
                     this.onstopsound && this.onstopsound();
                     break;
                 case COM_TRACE:
                     this.responseTrace(data.eventId);
                     break;
                 case COM_GENWAV:
-                    console.log("[COM_GENWAV]");
                     mml.play(data.mml);
                     break;
                 case COM_TERMINATE:
@@ -10264,13 +10256,28 @@ var messenger;
                 })
             });
         };
-        Messenger.prototype.sendWav = function (buffer) {
-            WavEncoder.encode({
-                sampleRate: this.SAMPLE_RATE,
-                channelData: buffer
-            }).then(function (wav) {
-                postMessage({ type: COM_GENWAV, wav: wav });
-            });
+        Messenger.prototype.sendWav = function (buffer, format) {
+            switch (format) {
+                case 'wav':
+                    WavEncoder.encode({
+                        sampleRate: this.SAMPLE_RATE,
+                        channelData: buffer
+                    }).then(function (wav) {
+                        postMessage({
+                            type: COM_GENWAV,
+                            format: 'wav',
+                            data: wav
+                        });
+                    });
+                    break;
+                default:
+                    postMessage({
+                        type: COM_GENWAV,
+                        format: 'raw',
+                        data: buffer
+                    });
+                    break;
+            }
         };
         Messenger.prototype.playSound = function () {
             postMessage({ type: COM_PLAYSOUND });
@@ -10331,6 +10338,6 @@ var msgr = new messenger.Messenger();
 
 
 
-}).call(this,require("oMfpAn"),typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {},require("buffer").Buffer,arguments[3],arguments[4],arguments[5],arguments[6],"/fake_f78413f2.js","/")
+}).call(this,require("oMfpAn"),typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {},require("buffer").Buffer,arguments[3],arguments[4],arguments[5],arguments[6],"/fake_1dc735c7.js","/")
 },{"buffer":1,"oMfpAn":4,"wav-encoder":5}]},{},[12])
 //# sourceMappingURL=flmmlworker.js.map

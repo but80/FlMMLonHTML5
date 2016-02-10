@@ -289,7 +289,7 @@ module flmml {
         protected static MAX_SYNCSOURCE: number = 3;
         protected static MAX_POLYVOICE: number = 64;
 
-        protected m_offline: boolean;
+        protected m_offlineFormat: string;
         protected m_sequencer: MSequencer;
         protected m_tracks: Array<MTrack>;
         protected m_source: SourceString;
@@ -324,11 +324,11 @@ module flmml {
         trackEndMarginMSec: number;
         channelEndMarginMSec: number;
 
-        constructor(offline: boolean) {
-            this.m_offline = offline;
+        constructor(offlineFormat?: string) {
+            this.m_offlineFormat = offlineFormat;
             this.trackEndMarginMSec = 3000;
             this.channelEndMarginMSec = 2000;
-            this.m_sequencer = new MSequencer(offline);
+            this.m_sequencer = new MSequencer(offlineFormat);
         }
 
         // static removeWhitespace(str: string): string {
@@ -1587,7 +1587,7 @@ module flmml {
         }
 
         play(str: string, paused: boolean = false): void {
-            if (this.m_offline) {
+            if (this.m_offlineFormat) {
                 this.play2(str);
                 return;
             }

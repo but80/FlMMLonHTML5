@@ -1,7 +1,8 @@
 /// <reference path="../flmml/MML.ts" />
 
-declare var require: (m: string) => any;
-var WavEncoder = require("wav-encoder");
+declare var global: any;
+declare function require(m: string): any;
+const WavEncoder = require("wav-encoder");
 
 module messenger {
 
@@ -54,14 +55,14 @@ module messenger {
 
             switch (type) {
                 case COM_BOOT:
-                    // console.log("[COM_BOOT] rate=%s bufsize=%s offline=%s", data.sampleRate, data.bufferSize, data.offline);
+                    // console.log("[COM_BOOT] rate=%s bufsize=%s offlineFormat=%s", data.sampleRate, data.bufferSize, data.offlineFormat);
                     this.SAMPLE_RATE = data.sampleRate;
                     this.BUFFER_SIZE = data.bufferSize;
-                    mml = this.mml = new MML(data.offline);
-                    if (data.offline && data.mml != null) mml.play(data.mml);
+                    mml = this.mml = new MML(data.offlineFormat);
+                    if (data.offlineFormat && data.mml != null) mml.play(data.mml);
                     break;
                 case COM_PLAY:
-                    // console.log("[COM_PLAY] paused=%s offline=%s", data.paused);
+                    // console.log("[COM_PLAY] paused=%s", data.paused);
                     mml.play(data.mml, data.paused);
                     break;
                 case COM_STOP:
@@ -143,13 +144,31 @@ module messenger {
             });
         }
 
-        sendWav(buffer: Float32Array[]): void {
-            WavEncoder.encode({
-                sampleRate: this.SAMPLE_RATE,
-                channelData: buffer
-            }).then(function(wav) {
-                postMessage({ type: COM_GENWAV, wav: wav });
-            });
+        sendWav(buffer: Float32Array[], format: string): void {
+            switch (format) {
+
+                case 'wav':
+                    WavEncoder.encode({
+                        sampleRate: this.SAMPLE_RATE,
+                        channelData: buffer
+                    }).then(function(wav) {
+                        postMessage({
+                            type: COM_GENWAV,
+                            format: 'wav',
+                            data: wav
+                        });
+                    });
+                    break;
+
+                default:
+                    postMessage({
+                        type: COM_GENWAV,
+                        format: 'raw',
+                        data: buffer
+                    });
+                    break;
+
+            }
         }
 
         playSound(): void {

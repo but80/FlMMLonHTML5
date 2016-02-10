@@ -41,13 +41,13 @@ module flmml {
         protected m_lastTime: number;
         protected m_maxProcTime: number;
         protected m_waitPause: boolean;
-        protected m_offline: boolean;
+        protected m_offlineFormat: string;
 
         protected processAllBinded: Function;
 
-        constructor(offline: boolean) {
-            this.m_offline = offline;
-            this.MULTIPLE = offline ? 1 : MSequencer.DEFAULT_MULTIPLE;
+        constructor(offlineFormat?: string) {
+            this.m_offlineFormat = offlineFormat;
+            this.MULTIPLE = offlineFormat ? 1 : MSequencer.DEFAULT_MULTIPLE;
             this.SAMPLE_RATE = msgr.SAMPLE_RATE;
             this.BUFFER_SIZE = msgr.BUFFER_SIZE;
             msgr.emptyBuffer = this.emptyBuffer = new Float32Array(this.BUFFER_SIZE * this.MULTIPLE);
@@ -223,8 +223,8 @@ module flmml {
                             this.pause();
                             this.m_step = /*MSequencer.STEP_PRE*/1;
                         } else {
-                            if (this.m_offline) {
-                                msgr_.sendWav(buffer);
+                            if (this.m_offlineFormat) {
+                                msgr_.sendWav(buffer, this.m_offlineFormat);
                             }
                             else {
                                  msgr_.playSound();
