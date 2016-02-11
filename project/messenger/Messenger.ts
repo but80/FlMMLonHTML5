@@ -1,4 +1,6 @@
 /// <reference path="../flmml/MML.ts" />
+/// <reference path="ISyncInfoMessage.d.ts" />
+/// <reference path="ICompCompMessage.d.ts" />
 
 declare var global: any;
 declare function require(m: string): any;
@@ -118,8 +120,7 @@ module messenger {
 
         compileComplete(): void {
             var mml: MML = this.mml;
-
-            postMessage({
+            var msg: ICompCompMessage = {
                 type: COM_COMPCOMP,
                 info: {
                     totalMSec: mml.getTotalMSec(),
@@ -141,7 +142,8 @@ module messenger {
                         ];
                     })
                 })
-            });
+            };
+            postMessage(msg);
         }
 
         sendWav(buffer: Float32Array[], format: string): void {
@@ -191,9 +193,8 @@ module messenger {
 
         syncInfo(): void {
             var mml: MML = this.mml;
-
             this.lastInfoTime = self.performance ? self.performance.now() : new Date().getTime();
-            postMessage({
+            var msg: ISyncInfoMessage = {
                 type: COM_SYNCINFO,
                 info: {
                     _isPlaying: mml.isPlaying(),
@@ -202,7 +203,8 @@ module messenger {
                     nowTimeStr: mml.getNowTimeStr(),
                     voiceCount: mml.getVoiceCount()
                 }
-            });
+            };
+            postMessage(msg);
         }
 
         responseTrace(eventId: number): void {

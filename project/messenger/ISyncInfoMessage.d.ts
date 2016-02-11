@@ -1,4 +1,6 @@
-module messenger {
+/// <reference path="IMessage.d.ts" />
+
+declare module messenger {
     
     export interface ISyncInfoMessage_Info {
         _isPlaying: boolean;
@@ -12,5 +14,5 @@ module messenger {
         type: number;
         info: ISyncInfoMessage_Info;
     }
-    
+
 }
