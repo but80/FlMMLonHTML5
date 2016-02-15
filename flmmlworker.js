@@ -3647,9 +3647,6 @@ var fmgenAs;
 })(fmgenAs || (fmgenAs = {}));
 
 
-
-
-
 var flmml;
 (function (flmml) {
     var MFormant = (function () {
@@ -8445,6 +8442,7 @@ var flmml;
         };
         return SourceString;
     })();
+    flmml.SourceString = SourceString;
     var MapReference = (function () {
         function MapReference(pos) {
             this.pos = pos;
@@ -8461,6 +8459,7 @@ var flmml;
         };
         return MapReference;
     })();
+    flmml.MapReference = MapReference;
     ;
     var MappedString = (function () {
         function MappedString(s) {
@@ -8660,6 +8659,7 @@ var flmml;
         };
         return MappedString;
     })();
+    flmml.MappedString = MappedString;
     var reNonWhitespace = /\S/;
     var MML = (function () {
         function MML(offlineFormat) {
@@ -10232,7 +10232,7 @@ var messenger;
         };
         Messenger.prototype.compileComplete = function () {
             var mml = this.mml;
-            postMessage({
+            var msg = {
                 type: COM_COMPCOMP,
                 info: {
                     totalMSec: mml.getTotalMSec(),
@@ -10254,7 +10254,8 @@ var messenger;
                         ];
                     });
                 })
-            });
+            };
+            postMessage(msg);
         };
         Messenger.prototype.sendWav = function (buffer, format) {
             switch (format) {
@@ -10297,7 +10298,7 @@ var messenger;
         Messenger.prototype.syncInfo = function () {
             var mml = this.mml;
             this.lastInfoTime = self.performance ? self.performance.now() : new Date().getTime();
-            postMessage({
+            var msg = {
                 type: COM_SYNCINFO,
                 info: {
                     _isPlaying: mml.isPlaying(),
@@ -10306,7 +10307,8 @@ var messenger;
                     nowTimeStr: mml.getNowTimeStr(),
                     voiceCount: mml.getVoiceCount()
                 }
-            });
+            };
+            postMessage(msg);
         };
         Messenger.prototype.responseTrace = function (eventId) {
             postMessage({
@@ -10338,6 +10340,6 @@ var msgr = new messenger.Messenger();
 
 
 
-}).call(this,require("oMfpAn"),typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {},require("buffer").Buffer,arguments[3],arguments[4],arguments[5],arguments[6],"/fake_1dc735c7.js","/")
+}).call(this,require("oMfpAn"),typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {},require("buffer").Buffer,arguments[3],arguments[4],arguments[5],arguments[6],"/fake_602972b2.js","/")
 },{"buffer":1,"oMfpAn":4,"wav-encoder":5}]},{},[12])
 //# sourceMappingURL=flmmlworker.js.map

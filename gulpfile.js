@@ -3,8 +3,18 @@
 var gulp = require('gulp');
 var typescript = require('gulp-typescript');
 var concat = require('gulp-concat-sourcemap');
+var addsrc = require('gulp-add-src');
 var browserify = require('gulp-browserify');
 var sourcemaps = require('gulp-sourcemaps');
+
+gulp.task('dts', function(done){
+	gulp.src([ './project/**/*.ts' ])
+		.pipe(typescript({ target:'ES5', declaration:true, removeComments:false }))
+		.dts
+		.pipe(addsrc('./project/**/*.d.ts'))
+		.pipe(gulp.dest('./dist/dts/'))
+		.on('end', done);
+});
 
 gulp.task('build', function(done){
 	gulp.src([
@@ -26,4 +36,4 @@ gulp.task('build', function(done){
 		.on('end', done);
 });
 
-gulp.task('default', [ 'build' ]);
+gulp.task('default', [ 'build', 'dts' ]);

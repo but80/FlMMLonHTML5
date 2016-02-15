@@ -20,7 +20,7 @@
 
 module flmml {
 
-    class SourceString {
+    export class SourceString {
 
         protected _source;
         protected _lineTail: number[];
@@ -46,9 +46,9 @@ module flmml {
 
     }
 
-    type MapRef = { label:string; pos?:number; };
+    export type MapRef = { label:string; pos?:number; };
 
-    class MapReference {
+    export class MapReference {
         pos: number;
         refs: MapRef[];
         constructor(pos:number) {
@@ -66,7 +66,7 @@ module flmml {
         }
     };
 
-    class MappedString {
+    export class MappedString {
         
         protected _str: string;
         protected _map: MapReference[];
@@ -273,12 +273,12 @@ module flmml {
     
     var reNonWhitespace = /\S/;
 
-    type MacroArg = {
+    export type MacroArg = {
         id: string;
         index: number;
     };
     
-    type MacroDef = {
+    export type MacroDef = {
         id: string;
         code: MappedString;
         args: Array<MappedString|MacroArg>;
