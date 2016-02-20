@@ -152,6 +152,7 @@ module messenger {
                 })
             };
             postMessage(msg);
+            this.syncInfo();
         }
 
         sendWav(buffer: Float32Array[], format: string): void {

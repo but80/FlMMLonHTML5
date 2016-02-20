@@ -1,0 +1,13 @@
+declare module messenger {
+    interface ISyncInfoMessage_Info {
+        _isPlaying: boolean;
+        _isPaused: boolean;
+        nowMSec: number;
+        nowTimeStr: string;
+        voiceCount: number;
+    }
+    interface ISyncInfoMessage {
+        type: number;
+        info: ISyncInfoMessage_Info;
+    }
+}

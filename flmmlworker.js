@@ -8633,10 +8633,12 @@ var flmml;
             if (compileOnly === void 0) { compileOnly = false; }
             console.log('[#W:1-1] MML#play called (compileOnly=%s)', compileOnly);
             if (this.m_offlineFormat) {
-                this.play2(str);
+                this.play2(str, compileOnly);
                 return;
             }
-            if (this.m_sequencer.isPaused() || this.m_compiledButNotPlayed) {
+            if (compileOnly)
+                this.m_sequencer.stop();
+            if (this.m_sequencer.isPaused() && !compileOnly || this.m_compiledButNotPlayed) {
                 console.log('[#W:1-X] MML#play compileOnly calling MSequencer#play');
                 if (!compileOnly) {
                     this.m_sequencer.play();
@@ -8879,6 +8881,7 @@ var messenger;
                 })
             };
             postMessage(msg);
+            this.syncInfo();
         };
         Messenger.prototype.sendWav = function (buffer, format) {
             switch (format) {
@@ -8967,7 +8970,7 @@ var msgr = new messenger.Messenger();
 
 
 
-}).call(this,require("TwOfRe"),typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {},require("buffer").Buffer,arguments[3],arguments[4],arguments[5],arguments[6],"/fake_e2208682.js","/")
+}).call(this,require("TwOfRe"),typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {},require("buffer").Buffer,arguments[3],arguments[4],arguments[5],arguments[6],"/fake_d33e2f79.js","/")
 },{"TwOfRe":12,"buffer":9,"wav-encoder":1}],9:[function(require,module,exports){
 (function (process,global,Buffer,__argument0,__argument1,__argument2,__argument3,__filename,__dirname){
 /*!

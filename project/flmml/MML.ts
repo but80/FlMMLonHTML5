@@ -1592,10 +1592,11 @@ module flmml {
         play(str: string, compileOnly: boolean = false): void {
             console.log('[#W:1-1] MML#play called (compileOnly=%s)', compileOnly);
             if (this.m_offlineFormat) {
-                this.play2(str);
+                this.play2(str, compileOnly);
                 return;
             }
-            if (this.m_sequencer.isPaused() || this.m_compiledButNotPlayed) {
+            if (compileOnly) this.m_sequencer.stop();
+            if (this.m_sequencer.isPaused() && !compileOnly || this.m_compiledButNotPlayed) {
                 console.log('[#W:1-X] MML#play compileOnly calling MSequencer#play');
                 if (!compileOnly) {
                     this.m_sequencer.play();
