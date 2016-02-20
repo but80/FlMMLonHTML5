@@ -82,6 +82,8 @@ declare module flmml {
         protected static MAX_SYNCSOURCE: number;
         protected static MAX_POLYVOICE: number;
         protected m_offlineFormat: string;
+        protected m_compiledButNotPlayed: boolean;
+        protected m_lastMML: string;
         protected m_sequencer: MSequencer;
         protected m_tracks: Array<MTrack>;
         protected m_source: SourceString;
@@ -145,8 +147,8 @@ declare module flmml {
         protected findMetaDescN(sectionName: string): string;
         protected processComment(str: string): void;
         protected processGroupNotes(): void;
-        play(str: string, paused?: boolean): void;
-        private play2(str, paused?);
+        play(str: string, compileOnly?: boolean): void;
+        private play2(str, compileOnly?);
         stop(): void;
         pause(): void;
         resume(): void;

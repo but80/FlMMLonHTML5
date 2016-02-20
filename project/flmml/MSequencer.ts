@@ -75,12 +75,15 @@ module flmml {
         }
         
         play(): void {
+            console.log('[#W:4-3-1] MSequencer#play called');
             if (this.m_status === /*MSequencer.STATUS_PAUSE*/1) {
+                console.log('[#W:4-3-2] STATUS_PAUSE calling Messenger#playSound (will send COM_PLAYSOUND to MAIN THREAD)');
                 var bufMSec: number = this.BUFFER_SIZE / this.SAMPLE_RATE * 1000.0;
                 this.m_status = /*MSequencer.STATUS_PLAY*/3;
                 msgr.playSound();
                 this.startProcTimer();
             } else {
+                console.log('[#W:4-3-2] not STATUS_PAUSE calling MSequencer#processStart');
                 //this.m_globalTick = 0;
                 this.m_globalSample = 0;
                 this.m_totalMSec = this.getTotalMSec();

@@ -290,6 +290,8 @@ module flmml {
         protected static MAX_POLYVOICE: number = 64;
 
         protected m_offlineFormat: string;
+        protected m_compiledButNotPlayed: boolean;
+        protected m_lastMML: string;
         protected m_sequencer: MSequencer;
         protected m_tracks: Array<MTrack>;
         protected m_source: SourceString;
@@ -326,6 +328,7 @@ module flmml {
 
         constructor(offlineFormat?: string) {
             this.m_offlineFormat = offlineFormat;
+            this.m_compiledButNotPlayed = false;
             this.trackEndMarginMSec = 3000;
             this.channelEndMarginMSec = 2000;
             this.m_sequencer = new MSequencer(offlineFormat);
@@ -1586,21 +1589,30 @@ module flmml {
             if (GroupNotesStart >= 0) this.warning(MWarning.UNCLOSED_GROUPNOTES, "");
         }
 
-        play(str: string, paused: boolean = false): void {
+        play(str: string, compileOnly: boolean = false): void {
+            console.log('[#W:1-1] MML#play called (compileOnly=%s)', compileOnly);
             if (this.m_offlineFormat) {
                 this.play2(str);
                 return;
             }
-            if (this.m_sequencer.isPaused()) {
-                if (!paused) this.m_sequencer.play();
+            if (this.m_sequencer.isPaused() || this.m_compiledButNotPlayed) {
+                console.log('[#W:1-X] MML#play compileOnly calling MSequencer#play');
+                if (!compileOnly) {
+                    this.m_sequencer.play();
+                    this.m_compiledButNotPlayed = false;
+                }
                 return;
             }
             // 音声が停止するのを待つ
-            msgr.onstopsound = this.play2.bind(this, str, paused);
+            console.log('[#W:1-2] MML#play binding Messenger#onstopsound');
+            msgr.onstopsound = this.play2.bind(this, str, compileOnly);
             msgr.stopSound(true);
         }
 
-        private play2(str: string, paused: boolean = false): void {
+        private play2(str: string, compileOnly: boolean = false): void {
+            console.log('[#W:4-2] MML#play2 called, compiling MML (compileOnly=%s)', compileOnly);
+            msgr.compileStart();
+            this.m_lastMML = str;
             MEvent.resetCounter();
             this.m_sequencer.disconnectAll();
             this.m_tracks = new Array();
@@ -1672,8 +1684,10 @@ module flmml {
             msgr.compileComplete();
 
             // play start
-            if (!paused) this.m_sequencer.play();
+            if (!compileOnly) this.m_sequencer.play();
+            this.m_compiledButNotPlayed = compileOnly;
 
+            console.log('[#W:4-4] MML#play2 unbinding Messenger#onstopsound');
             msgr.onstopsound = null;
         }
 

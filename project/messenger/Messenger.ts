@@ -28,7 +28,9 @@ module messenger {
         COM_TRACE     = 13, // Main->Worker->Main
         COM_MUTE      = 14, // Main->Worker
         COM_GENWAV    = 15, // Main->Worker->Main
-        COM_TERMINATE = 16; // Main->Worker
+        COM_TERMINATE = 16, // Main->Worker
+        COM_LOG       = 17, // Worker->Main
+        COM_COMPSTART = 18; // Worker->Main
 
     export class Messenger {
         mml: MML;
@@ -64,8 +66,8 @@ module messenger {
                     if (data.offlineFormat && data.mml != null) mml.play(data.mml);
                     break;
                 case COM_PLAY:
-                    // console.log("[COM_PLAY] paused=%s", data.paused);
-                    mml.play(data.mml, data.paused);
+                    // console.log("[COM_PLAY] compileOnly=%s", data.compileOnly);
+                    mml.play(data.mml, data.compileOnly);
                     break;
                 case COM_STOP:
                     // console.log("[COM_STOP]");
@@ -99,6 +101,7 @@ module messenger {
                     break;
                 case COM_STOPSOUND:
                     // console.log("[COM_STOPSOUND]");
+                    console.log('[#W:4-1] Messenger received COM_STOPSOUND');
                     this.onstopsound && this.onstopsound();
                     break;
                 case COM_TRACE:
@@ -118,7 +121,12 @@ module messenger {
             postMessage({ type: COM_BUFRING, progress: progress });
         }
 
+        compileStart(): void {
+            postMessage({ type: COM_COMPSTART });
+        }
+
         compileComplete(): void {
+            console.log('[#W:4-2] Messenger#compileComplete called, sending COM_COMPCOMP to MAIN THREAD');
             var mml: MML = this.mml;
             var msg: ICompCompMessage = {
                 type: COM_COMPCOMP,
@@ -179,6 +187,7 @@ module messenger {
         }
 
         stopSound(isFlushBuf: boolean = false): void {
+            console.log('[#W:2] Messenger#stopSound called, sending COM_STOPSOUND to MAIN THREAD');
             postMessage({ type: COM_STOPSOUND, isFlushBuf: isFlushBuf });
         }
 
@@ -227,6 +236,11 @@ module messenger {
             postMessage({ type: COM_DEBUG, str: str });
         }
     }
+
+    console['log'] = function(){
+        postMessage({ type: COM_LOG, args: Array.prototype.slice.call(arguments) });
+    };
+    
 }
 
 var msgr: messenger.Messenger = new messenger.Messenger();

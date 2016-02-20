@@ -20,6 +20,7 @@ declare module messenger {
         constructor();
         onMessage(e: any): void;
         buffering(progress: number): void;
+        compileStart(): void;
         compileComplete(): void;
         sendWav(buffer: Float32Array[], format: string): void;
         playSound(): void;
