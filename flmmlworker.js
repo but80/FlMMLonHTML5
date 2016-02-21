@@ -7272,6 +7272,7 @@ var flmml;
         function MML(offlineFormat) {
             this.m_offlineFormat = offlineFormat;
             this.m_compiledButNotPlayed = false;
+            this.m_lastMML = null;
             this.trackEndMarginMSec = 3000;
             this.channelEndMarginMSec = 2000;
             this.m_sequencer = new flmml.MSequencer(offlineFormat);
@@ -8636,8 +8637,10 @@ var flmml;
                 this.play2(str, compileOnly);
                 return;
             }
-            if (compileOnly)
+            if (compileOnly || this.m_lastMML !== str) {
                 this.m_sequencer.stop();
+                this.m_compiledButNotPlayed = false;
+            }
             if (this.m_sequencer.isPaused() && !compileOnly || this.m_compiledButNotPlayed) {
                 console.log('[#W:1-X] MML#play compileOnly calling MSequencer#play');
                 if (!compileOnly) {
@@ -8970,7 +8973,7 @@ var msgr = new messenger.Messenger();
 
 
 
-}).call(this,require("TwOfRe"),typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {},require("buffer").Buffer,arguments[3],arguments[4],arguments[5],arguments[6],"/fake_d33e2f79.js","/")
+}).call(this,require("TwOfRe"),typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {},require("buffer").Buffer,arguments[3],arguments[4],arguments[5],arguments[6],"/fake_ba0597fc.js","/")
 },{"TwOfRe":12,"buffer":9,"wav-encoder":1}],9:[function(require,module,exports){
 (function (process,global,Buffer,__argument0,__argument1,__argument2,__argument3,__filename,__dirname){
 /*!

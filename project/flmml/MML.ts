@@ -329,6 +329,7 @@ module flmml {
         constructor(offlineFormat?: string) {
             this.m_offlineFormat = offlineFormat;
             this.m_compiledButNotPlayed = false;
+            this.m_lastMML = null;
             this.trackEndMarginMSec = 3000;
             this.channelEndMarginMSec = 2000;
             this.m_sequencer = new MSequencer(offlineFormat);
@@ -1595,7 +1596,10 @@ module flmml {
                 this.play2(str, compileOnly);
                 return;
             }
-            if (compileOnly) this.m_sequencer.stop();
+            if (compileOnly || this.m_lastMML !== str) {
+                this.m_sequencer.stop();
+                this.m_compiledButNotPlayed = false;
+            }
             if (this.m_sequencer.isPaused() && !compileOnly || this.m_compiledButNotPlayed) {
                 console.log('[#W:1-X] MML#play compileOnly calling MSequencer#play');
                 if (!compileOnly) {
