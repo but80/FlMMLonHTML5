@@ -26,6 +26,7 @@ declare module flmml {
             line: number;
             column: number;
         };
+        sourceText: string;
     }
     type MapRef = {
         label: string;
@@ -118,6 +119,7 @@ declare module flmml {
         channelEndMarginMSec: number;
         constructor(offlineFormat?: string);
         static remove(str: string, start: number, end: number): string;
+        getSourceString(): string;
         getWarnings(): any[];
         protected warning(warnId: number, str: string | MappedString): void;
         protected len2tick(len: number): number;

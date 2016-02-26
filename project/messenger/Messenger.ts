@@ -130,6 +130,7 @@ module messenger {
             var mml: MML = this.mml;
             var msg: ICompCompMessage = {
                 type: COM_COMPCOMP,
+                mml: mml.getSourceString(),
                 info: {
                     totalMSec: mml.getTotalMSec(),
                     totalTimeStr: mml.getTotalTimeStr(),

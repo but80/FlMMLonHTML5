@@ -44,6 +44,10 @@ module flmml {
             return {line:l, column:i-i0};
         }
 
+        get sourceText(): string {
+            return this._source;
+        }
+
     }
 
     export type MapRef = { label:string; pos?:number; };
@@ -341,6 +345,10 @@ module flmml {
 
         static remove(str: string, start: number, end: number): string {
             return str.substring(0, start) + str.substring(end + 1);
+        }
+
+        getSourceString(): string {
+            return this.m_source.sourceText;
         }
 
         getWarnings(): any[] {

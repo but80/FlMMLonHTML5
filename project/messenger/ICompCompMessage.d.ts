@@ -13,6 +13,7 @@ declare module messenger {
     }
 
     export interface ICompCompMessage {
+        mml: string;
         type: number;
         info: ICompCompMessage_Info;
         events: any[][][];
