@@ -1727,10 +1727,12 @@ module flmml {
         */
 
         isPlaying(): boolean {
+            if (!this.m_sequencer) return false;
             return this.m_sequencer.isPlaying();
         }
 
         isPaused(): boolean {
+            if (!this.m_sequencer) return false;
             return this.m_sequencer.isPaused();
         }
 
@@ -1750,22 +1752,27 @@ module flmml {
         }
 
         getTotalMSec(): number {
+            if (!this.m_tracks) return 0;
             return this.m_tracks[MTrack.TEMPO_TRACK].getTotalMSec();
         }
 
         getTotalTimeStr(): string {
+            if (!this.m_tracks) return '00:00';
             return this.m_tracks[MTrack.TEMPO_TRACK].getTotalTimeStr();
         }
 
         getNowMSec(): number {
+            if (!this.m_sequencer) return 0;
             return this.m_sequencer.getNowMSec();
         }
 
         getNowTimeStr(): string {
+            if (!this.m_sequencer) return '00:00';
             return this.m_sequencer.getNowTimeStr();
         }
 
         getVoiceCount(): number {
+            if (!this.m_tracks) return 0;
             var i: number;
             var c: number = 0;
             for (i = 0; i < this.m_tracks.length; i++) {

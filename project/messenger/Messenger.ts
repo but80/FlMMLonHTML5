@@ -206,17 +206,32 @@ module messenger {
 
         syncInfo(): void {
             var mml: MML = this.mml;
+            var msg: ISyncInfoMessage;
+            if (mml) {
+                msg = {
+                    type: COM_SYNCINFO,
+                    info: {
+                        _isPlaying: mml.isPlaying(),
+                        _isPaused: mml.isPaused(),
+                        nowMSec: mml.getNowMSec(),
+                        nowTimeStr: mml.getNowTimeStr(),
+                        voiceCount: mml.getVoiceCount()
+                    }
+                };
+            }
+            else {
+                msg = {
+                    type: COM_SYNCINFO,
+                    info: {
+                        _isPlaying: false,
+                        _isPaused: false,
+                        nowMSec: 0,
+                        nowTimeStr: '00:00',
+                        voiceCount: 0
+                    }
+                };
+            }
             this.lastInfoTime = self.performance ? self.performance.now() : new Date().getTime();
-            var msg: ISyncInfoMessage = {
-                type: COM_SYNCINFO,
-                info: {
-                    _isPlaying: mml.isPlaying(),
-                    _isPaused: mml.isPaused(),
-                    nowMSec: mml.getNowMSec(),
-                    nowTimeStr: mml.getNowTimeStr(),
-                    voiceCount: mml.getVoiceCount()
-                }
-            };
             postMessage(msg);
         }
 

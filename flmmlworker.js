@@ -8742,9 +8742,13 @@ var flmml;
             this.m_sequencer.play();
         };
         MML.prototype.isPlaying = function () {
+            if (!this.m_sequencer)
+                return false;
             return this.m_sequencer.isPlaying();
         };
         MML.prototype.isPaused = function () {
+            if (!this.m_sequencer)
+                return false;
             return this.m_sequencer.isPaused();
         };
         MML.prototype.mute = function (iTrack, f) {
@@ -8761,18 +8765,28 @@ var flmml;
             }
         };
         MML.prototype.getTotalMSec = function () {
+            if (!this.m_tracks)
+                return 0;
             return this.m_tracks[flmml.MTrack.TEMPO_TRACK].getTotalMSec();
         };
         MML.prototype.getTotalTimeStr = function () {
+            if (!this.m_tracks)
+                return '00:00';
             return this.m_tracks[flmml.MTrack.TEMPO_TRACK].getTotalTimeStr();
         };
         MML.prototype.getNowMSec = function () {
+            if (!this.m_sequencer)
+                return 0;
             return this.m_sequencer.getNowMSec();
         };
         MML.prototype.getNowTimeStr = function () {
+            if (!this.m_sequencer)
+                return '00:00';
             return this.m_sequencer.getNowTimeStr();
         };
         MML.prototype.getVoiceCount = function () {
+            if (!this.m_tracks)
+                return 0;
             var i;
             var c = 0;
             for (i = 0; i < this.m_tracks.length; i++) {
@@ -8945,17 +8959,32 @@ var messenger;
         };
         Messenger.prototype.syncInfo = function () {
             var mml = this.mml;
+            var msg;
+            if (mml) {
+                msg = {
+                    type: COM_SYNCINFO,
+                    info: {
+                        _isPlaying: mml.isPlaying(),
+                        _isPaused: mml.isPaused(),
+                        nowMSec: mml.getNowMSec(),
+                        nowTimeStr: mml.getNowTimeStr(),
+                        voiceCount: mml.getVoiceCount()
+                    }
+                };
+            }
+            else {
+                msg = {
+                    type: COM_SYNCINFO,
+                    info: {
+                        _isPlaying: false,
+                        _isPaused: false,
+                        nowMSec: 0,
+                        nowTimeStr: '00:00',
+                        voiceCount: 0
+                    }
+                };
+            }
             this.lastInfoTime = self.performance ? self.performance.now() : new Date().getTime();
-            var msg = {
-                type: COM_SYNCINFO,
-                info: {
-                    _isPlaying: mml.isPlaying(),
-                    _isPaused: mml.isPaused(),
-                    nowMSec: mml.getNowMSec(),
-                    nowTimeStr: mml.getNowTimeStr(),
-                    voiceCount: mml.getVoiceCount()
-                }
-            };
             postMessage(msg);
         };
         Messenger.prototype.responseTrace = function (eventId) {
@@ -8991,7 +9020,7 @@ var msgr = new messenger.Messenger();
 
 
 
-}).call(this,require("TwOfRe"),typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {},require("buffer").Buffer,arguments[3],arguments[4],arguments[5],arguments[6],"/fake_2ed50f6c.js","/")
+}).call(this,require("TwOfRe"),typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {},require("buffer").Buffer,arguments[3],arguments[4],arguments[5],arguments[6],"/fake_1d9f046a.js","/")
 },{"TwOfRe":12,"buffer":9,"wav-encoder":1}],9:[function(require,module,exports){
 (function (process,global,Buffer,__argument0,__argument1,__argument2,__argument3,__filename,__dirname){
 /*!
