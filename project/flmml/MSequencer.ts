@@ -1,7 +1,7 @@
 module flmml {
     // Web Audio + Web Worker利用につき大幅改定
     export class MSequencer {
-        protected static DEFAULT_MULTIPLE: number = 2; //32;
+        protected static DEFAULT_MULTIPLE: number = 32;
         
         // 戻すときは正規表現使用の置換で
         // /\*MSequencer\.(STATUS_|STEP_)(.*)\*/[0-9]*
@@ -45,9 +45,9 @@ module flmml {
 
         protected processAllBinded: Function;
 
-        constructor(offlineFormat?: string) {
+        constructor(offlineFormat?: string, bufferMultiple?: number) {
             this.m_offlineFormat = offlineFormat;
-            this.MULTIPLE = offlineFormat ? 1 : MSequencer.DEFAULT_MULTIPLE;
+            this.MULTIPLE = offlineFormat ? 1 : bufferMultiple || MSequencer.DEFAULT_MULTIPLE;
             this.SAMPLE_RATE = msgr.SAMPLE_RATE;
             this.BUFFER_SIZE = msgr.BUFFER_SIZE;
             msgr.emptyBuffer = this.emptyBuffer = new Float32Array(this.BUFFER_SIZE * this.MULTIPLE);

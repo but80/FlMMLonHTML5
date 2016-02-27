@@ -23,7 +23,7 @@ declare module flmml {
         protected m_waitPause: boolean;
         protected m_offlineFormat: string;
         protected processAllBinded: Function;
-        constructor(offlineFormat?: string);
+        constructor(offlineFormat?: string, bufferMultiple?: number);
         static getTimer(): number;
         play(): void;
         stop(): void;

@@ -330,13 +330,13 @@ module flmml {
         trackEndMarginMSec: number;
         channelEndMarginMSec: number;
 
-        constructor(offlineFormat?: string) {
+        constructor(offlineFormat?: string, bufferMultiple?: number) {
             this.m_offlineFormat = offlineFormat;
             this.m_compiledButNotPlayed = false;
             this.m_lastMML = null;
             this.trackEndMarginMSec = 3000;
             this.channelEndMarginMSec = 2000;
-            this.m_sequencer = new MSequencer(offlineFormat);
+            this.m_sequencer = new MSequencer(offlineFormat, bufferMultiple);
         }
 
         // static removeWhitespace(str: string): string {
@@ -1598,7 +1598,7 @@ module flmml {
             if (GroupNotesStart >= 0) this.warning(MWarning.UNCLOSED_GROUPNOTES, "");
         }
 
-        play(str: string, compileOnly: boolean = false): void {
+        play(str: string, compileOnly: boolean = false, mutedTracks?: number[]): void {
             console.log('[#W:1-1] MML#play called (compileOnly=%s)', compileOnly);
             if (this.m_offlineFormat) {
                 this.play2(str, compileOnly);
@@ -1618,11 +1618,11 @@ module flmml {
             }
             // 音声が停止するのを待つ
             console.log('[#W:1-2] MML#play binding Messenger#onstopsound');
-            msgr.onstopsound = this.play2.bind(this, str, compileOnly);
+            msgr.onstopsound = this.play2.bind(this, str, compileOnly, mutedTracks);
             msgr.stopSound(true);
         }
 
-        private play2(str: string, compileOnly: boolean = false): void {
+        private play2(str: string, compileOnly: boolean = false, mutedTracks?: number[]): void {
             console.log('[#W:4-2] MML#play2 called, compiling MML (compileOnly=%s)', compileOnly);
             msgr.compileStart();
             this.m_lastMML = str;
@@ -1695,6 +1695,10 @@ module flmml {
 
             // dispatch event
             msgr.compileComplete();
+
+            if (mutedTracks) {
+                for (var track of mutedTracks) this.mute(track, true);
+            }
 
             // play start
             if (!compileOnly) this.m_sequencer.play();

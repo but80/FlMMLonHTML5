@@ -13,6 +13,7 @@ declare module messenger {
         lastInfoTime: number;
         SAMPLE_RATE: number;
         BUFFER_SIZE: number;
+        BUFFER_MULTIPLE: number;
         emptyBuffer: Float32Array;
         onstopsound: Function;
         onrequestbuffer: Function;

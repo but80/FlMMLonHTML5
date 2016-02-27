@@ -39,6 +39,7 @@ module messenger {
         lastInfoTime: number;
         SAMPLE_RATE: number;
         BUFFER_SIZE: number;
+        BUFFER_MULTIPLE: number;
         emptyBuffer: Float32Array;
 
         onstopsound: Function = null;
@@ -62,12 +63,13 @@ module messenger {
                     // console.log("[COM_BOOT] rate=%s bufsize=%s offlineFormat=%s", data.sampleRate, data.bufferSize, data.offlineFormat);
                     this.SAMPLE_RATE = data.sampleRate;
                     this.BUFFER_SIZE = data.bufferSize;
-                    mml = this.mml = new MML(data.offlineFormat);
+                    this.BUFFER_MULTIPLE = data.bufferMultiple;
+                    mml = this.mml = new MML(data.offlineFormat, this.BUFFER_MULTIPLE);
                     if (data.offlineFormat && data.mml != null) mml.play(data.mml);
                     break;
                 case COM_PLAY:
                     // console.log("[COM_PLAY] compileOnly=%s", data.compileOnly);
-                    mml.play(data.mml, data.compileOnly);
+                    mml.play(data.mml, data.compileOnly, data.mutedTracks);
                     break;
                 case COM_STOP:
                     // console.log("[COM_STOP]");

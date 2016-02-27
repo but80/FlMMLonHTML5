@@ -117,7 +117,7 @@ declare module flmml {
         protected m_metaComment: string;
         trackEndMarginMSec: number;
         channelEndMarginMSec: number;
-        constructor(offlineFormat?: string);
+        constructor(offlineFormat?: string, bufferMultiple?: number);
         static remove(str: string, start: number, end: number): string;
         getSourceString(): string;
         getWarnings(): any[];
@@ -149,8 +149,8 @@ declare module flmml {
         protected findMetaDescN(sectionName: string): string;
         protected processComment(str: string): void;
         protected processGroupNotes(): void;
-        play(str: string, compileOnly?: boolean): void;
-        private play2(str, compileOnly?);
+        play(str: string, compileOnly?: boolean, mutedTracks?: number[]): void;
+        private play2(str, compileOnly?, mutedTracks?);
         stop(): void;
         pause(): void;
         resume(): void;
