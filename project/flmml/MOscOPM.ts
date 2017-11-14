@@ -94,12 +94,12 @@ module flmml {
         ];
 
         constructor() {
+            super();
             this.m_fm = new OPM();
             this.m_oneSample = new Float32Array(1);
             this.m_velocity = 127;
             this.m_al = 0;
             this.m_tl = new Array<number>(4);
-            super();
             MOscOPM.boot();
             this.m_fm.Init(MOscOPM.OPM_CLOCK, msgr.SAMPLE_RATE);
             this.m_fm.Reset();

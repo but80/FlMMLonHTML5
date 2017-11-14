@@ -31,13 +31,13 @@ module flmml {
 
         constructor() {
             MOscFcDpcm.boot();
+            super();
             this.m_readCount = 0;
             this.m_address = 0;
             this.m_bit = 0;
             this.m_wav = 0;
             this.m_length = 0;
             this.m_ofs = 0;
-            super();
             this.setWaveNo(0);
         }
 
